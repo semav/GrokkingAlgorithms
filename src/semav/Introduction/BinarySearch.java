@@ -11,15 +11,6 @@ public class BinarySearch {
 
         index = binarySearch(array, 23453430);
         System.out.println(index);
-
-        index = binarySearch(array, 2350);
-        System.out.println(index);
-
-        index = binarySearch(array, 21450);
-        System.out.println(index);
-
-        index = binarySearch(array, 4510);
-        System.out.println(index);
     }
 
     private static int binarySearch(int[] array, int value) {
