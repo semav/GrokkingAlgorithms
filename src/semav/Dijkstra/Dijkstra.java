@@ -7,10 +7,12 @@ public class Dijkstra {
         Graph graph = new Graph();
         graph.addEdge("start", "a", 6);
         graph.addEdge("start", "b", 2);
+        //graph.addEdge("start", "c", 1);
 
         graph.addEdge("a", "fin", 1);
         graph.addEdge("b", "a", 3);
         graph.addEdge("b", "fin",5);
+        //graph.addEdge("c", "fin",1);
 
         System.out.println(graph.pathExists("start", "fin"));
     }
