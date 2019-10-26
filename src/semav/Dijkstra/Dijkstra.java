@@ -7,12 +7,12 @@ public class Dijkstra {
         Graph graph = new Graph();
         graph.addEdge("start", "a", 6);
         graph.addEdge("start", "b", 2);
-        //graph.addEdge("start", "c", 1);
+        graph.addEdge("start", "c", 2);
 
         graph.addEdge("a", "fin", 1);
         graph.addEdge("b", "a", 3);
         graph.addEdge("b", "fin",5);
-        //graph.addEdge("c", "fin",1);
+        graph.addEdge("c", "fin",20);
 
         System.out.println(graph.pathExists("start", "fin"));
     }
@@ -32,54 +32,61 @@ class Graph {
     private HashMap<String, ArrayList<Edge>> edges = new HashMap<>();
 
     int pathExists(String start, String finish) {
-        HashMap<String, Integer> costs = new HashMap<>();
+        HashMap<String, Integer> weights = new HashMap<>();
         HashMap<String, String> parents = new HashMap<>();
         HashSet<String> processed = new HashSet<>();
 
-        edges.get(start).forEach(e->{
-            costs.put(e.node, e.weight);
+        // Initialize weights and parents for neighbours of start node
+        edges.get(start).forEach(e -> {
+            weights.put(e.node, e.weight);
             parents.put(e.node, start);
         });
 
-        String lowestCostNode = getLowestCostNode(costs, processed);
-        while (lowestCostNode != null) {
-            int cost = costs.get(lowestCostNode);
-            ArrayList<Edge> neighbors = edges.get(lowestCostNode);
+        String lowestWeightNode = getLowestWeightNode(weights, processed);
+
+        while (lowestWeightNode != null) {
+            int weight = weights.get(lowestWeightNode);
+            ArrayList<Edge> neighbors = edges.get(lowestWeightNode);
 
             if (neighbors != null) {
                 for (Edge neighbor : neighbors) {
-                    final int newCost = cost + neighbor.weight;
-                    final String parentNode = lowestCostNode;
+                    final int neighborWeight = weight + neighbor.weight;
+                    final String parentNode = lowestWeightNode;
 
-                    costs.compute(neighbor.node, (k, c) -> {
-                        if (c == null || newCost < c) {
+                    weights.compute(neighbor.node, (k, w) -> {
+                        if (w == null || neighborWeight < w) {
                             parents.put(neighbor.node, parentNode);
-                            return newCost;
+                            return neighborWeight;
                         }
-                        return c;
+                        return w;
                     });
                 }
             }
 
-            processed.add(lowestCostNode);
-            lowestCostNode = getLowestCostNode(costs, processed);
+            processed.add(lowestWeightNode);
+            lowestWeightNode = getLowestWeightNode(weights, processed);
         }
 
-        return costs.get(finish);
+        return weights.get(finish);
     }
 
-    private String getLowestCostNode(HashMap<String, Integer> costs, HashSet<String> processed) {
-        String node = null;
-        int cost = Integer.MAX_VALUE;
+    /**
+    Returns a node that has the lowest weight and isn't processed
+     */
+    private String getLowestWeightNode(HashMap<String, Integer> weights, HashSet<String> processed) {
+        String lowestWeightNode = null;
+        int lowestWeight = Integer.MAX_VALUE;
 
-        for(HashMap.Entry<String, Integer> entry : costs.entrySet()) {
-            if (entry.getValue() < cost && !processed.contains(entry.getKey())) {
-                node = entry.getKey();
-                cost = entry.getValue();
+        for(HashMap.Entry<String, Integer> entry : weights.entrySet()) {
+            int weight = entry.getValue();
+            String node = entry.getKey();
+            if (weight < lowestWeight && !processed.contains(node)) {
+                lowestWeightNode = node;
+                lowestWeight = weight;
             }
         }
 
-        return node;
+        return lowestWeightNode;
     }
 
     void addEdge(String from, String to, int weight) {
