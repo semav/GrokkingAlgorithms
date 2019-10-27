@@ -1,3 +1,3 @@
-Grokking algorithms in Java.
+Grokking algorithms.
 
-Examples from the book.
+Examples from the book in Java.
