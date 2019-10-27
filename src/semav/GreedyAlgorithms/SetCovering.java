@@ -18,23 +18,29 @@ public class SetCovering {
         Set<String> finalStations = new HashSet<>();
 
         while (!statesNeeded.isEmpty()) {
-            String bestStation = null;
-            Set<String> statesCovered = new HashSet<>();
+            String bestStation = getBestStation(stations, statesNeeded);
 
-            for (Map.Entry<String, Set<String>> station : stations.entrySet()) {
-                Set<String> covered = new HashSet<>(statesNeeded);
-                covered.retainAll(station.getValue());
-
-                if (covered.size() > statesCovered.size()) {
-                    bestStation = station.getKey();
-                    statesCovered = covered;
-                }
-            }
-
-            statesNeeded.removeAll(statesCovered);
+            statesNeeded.removeAll(stations.get(bestStation));
             finalStations.add(bestStation);
         }
 
         System.out.println(finalStations);
+    }
+
+    private static String getBestStation(Map<String, Set<String>> stations, Set<String> statesNeeded) {
+        String bestStation = null;
+        int statesCovered = 0;
+
+        for (Map.Entry<String, Set<String>> station : stations.entrySet()) {
+            Set<String> covered = new HashSet<>(statesNeeded);
+            covered.retainAll(station.getValue());
+
+            if (covered.size() > statesCovered) {
+                bestStation = station.getKey();
+                statesCovered = covered.size();
+            }
+        }
+
+        return bestStation;
     }
 }
